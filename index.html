@@ -195,6 +195,7 @@ const ctx = canvas.getContext("2d");
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
+const STORAGE_KEY = "hackathon_end_time";
 
 let duration = 10; // 25 HOURS
 let time = duration;
@@ -223,24 +224,43 @@ function format(t) {
 
 
 function startTimer() {
-    if (interval) return;
+  if (interval) return;
 
-    controls.classList.add("hidden"); //
+  let endTime = localStorage.getItem(STORAGE_KEY);
 
-    interval = setInterval(() => {
-        if (time === 0) {
-            clearInterval(interval);
-            interval = null;
-            explode();
-            return;
-        }
+  if (!endTime) {
+    endTime = Date.now() + time * 1000;
+    localStorage.setItem(STORAGE_KEY, endTime);
+  } else {
+    endTime = Number(endTime);
+  }
 
-        time--;
-        timerEl.textContent = format(time);
+  controls.classList.add("hidden");
 
-        if (time <= 10) timerEl.classList.add("warning");
-    }, 1000);
+  interval = setInterval(() => {
+    const remaining = Math.max(
+      0,
+      Math.floor((endTime - Date.now()) / 1000)
+    );
+
+    time = remaining;
+    timerEl.textContent = format(time);
+
+    if (time <= 10) timerEl.classList.add("warning");
+
+    if (time === 0) {
+      clearInterval(interval);
+      interval = null;
+      explode();
+    }
+  }, 1000);
 }
+
+const savedEnd = localStorage.getItem(STORAGE_KEY);
+if (savedEnd && Number(savedEnd) > Date.now()) {
+  startTimer();
+}
+
 
 
         function explode() {
