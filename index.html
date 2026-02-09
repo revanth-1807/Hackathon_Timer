@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hackathon Countdown</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0b0d12;
+            --card: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.12);
+            --text: #ffffff;
+            --muted: #9aa0aa;
+            --accent: #5eead4;
+            --danger: #ff5f5f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background:
+                radial-gradient(1000px 600px at 50% -20%, #1b1f2a, transparent),
+                var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+        }
+
+        .app {
+            width: 520px;
+            padding: 48px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .timer {
+            font-size: 6rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 40px;
+        }
+
+        .timer.warning {
+            color: var(--danger);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.04);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .start {
+            background: var(--accent);
+            color: #022c22;
+        }
+
+        .reset {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .controls.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: 0.4s ease;
+        }
+
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .blast {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: 800;
+            opacity: 0;
+            pointer-events: none;
+            color: var(--danger);
+        }
+        .timer.hidden {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: 0.4s ease;
+}
+
+        .blast.show {
+            animation: blastIn 1.4s forwards;
+            pointer-events: auto;
+        }
+
+        @keyframes blastIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.6);
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale(1.15);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="app">
+        <h1>HACKATHON COUNTDOWN</h1>
+        <div class="timer" id="timer">01:00</div>
+
+        <div class="controls" id="controls">
+            <button class="start" onclick="startTimer()">Start</button>
+        </div>
+    </div>
+
+    <div class="blast" id="blast">TIME UP</div>
+
+    <script>
+
+        const controls = document.getElementById("controls");
+
+        /* ====== GLOBAL STATE ====== */
+const timerEl = document.getElementById("timer");
+const blastEl = document.getElementById("blast");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let duration = 10; // 25 HOURS
+let time = duration;
+let interval = null;   // ✅ MUST exist
+let particles = [];
+
+function format(t) {
+  if (t >= 3600) {
+    // HH:MM:SS
+    const h = String(Math.floor(t / 3600)).padStart(2, '0');
+    const m = String(Math.floor((t % 3600) / 60)).padStart(2, '0');
+    const s = String(t % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+
+  if (t >= 60) {
+    // MM:SS
+    const m = String(Math.floor(t / 60)).padStart(2, '0');
+    const s = String(t % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  // Seconds only
+  return String(t);
+}
+
+
+function startTimer() {
+    if (interval) return;
+
+    controls.classList.add("hidden"); //
+
+    interval = setInterval(() => {
+        if (time === 0) {
+            clearInterval(interval);
+            interval = null;
+            explode();
+            return;
+        }
+
+        time--;
+        timerEl.textContent = format(time);
+
+        if (time <= 10) timerEl.classList.add("warning");
+    }, 1000);
+}
+
+
+        function explode() {
+              timerEl.classList.add("hidden"); //
+            blastEl.style.opacity = 1;
+            blastEl.classList.add("show");
+
+            for (let i = 0; i < 220; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 12,
+                    vy: (Math.random() - 0.5) * 12,
+                    r: Math.random() * 2.5 + 1,
+                    life: 90
+                });
+            }
+            animate();
+
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = "#ff5f5f";
+                ctx.fill();
+                if (p.life <= 0) particles.splice(i, 1);
+            });
+            if (particles.length) requestAnimationFrame(animate);
+        }
+
+        timerEl.textContent = format(time);
+    </script>
+
+</body>
+
+</html>
