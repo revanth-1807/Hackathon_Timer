@@ -1,305 +1,291 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hackathon Countdown</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg: #0b0d12;
-            --card: rgba(255, 255, 255, 0.06);
-            --border: rgba(255, 255, 255, 0.12);
-            --text: #ffffff;
-            --muted: #9aa0aa;
-            --accent: #5eead4;
-            --danger: #ff5f5f;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            height: 100vh;
-            background:
-                radial-gradient(1000px 600px at 50% -20%, #1b1f2a, transparent),
-                var(--bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text);
-        }
-
-        .app {
-            width: 520px;
-            padding: 48px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 28px;
-            text-align: center;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6);
-        }
-
-        h1 {
-            font-size: 1rem;
-            letter-spacing: 0.2em;
-            color: var(--muted);
-            margin-bottom: 24px;
-        }
-
-        .timer {
-            font-size: 6rem;
-            font-weight: 800;
-            letter-spacing: -2px;
-            margin-bottom: 40px;
-        }
-
-        .timer.warning {
-            color: var(--danger);
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.04);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .controls {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-        }
-
-        button {
-            padding: 14px 28px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 14px;
-            border: none;
-            cursor: pointer;
-            transition: 0.25s ease;
-        }
-
-        .start {
-            background: var(--accent);
-            color: #022c22;
-        }
-
-        .reset {
-            background: transparent;
-            color: var(--muted);
-            border: 1px solid var(--border);
-        }
-
-        .controls.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(10px);
-            transition: 0.4s ease;
-        }
-
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        canvas {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        .blast {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            font-weight: 800;
-            opacity: 0;
-            pointer-events: none;
-            color: var(--danger);
-        }
-        .timer.hidden {
-  opacity: 0;
-  transform: scale(0.9);
-  transition: 0.4s ease;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-        .blast.show {
-            animation: blastIn 1.4s forwards;
-            pointer-events: auto;
-        }
+/* 🔥 DARK BODY */
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
 
-        @keyframes blastIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.6);
-            }
+    background: radial-gradient(circle at top, #020617, #0f172a);
+    color: #e2e8f0;
+}
 
-            60% {
-                opacity: 1;
-                transform: scale(1.15);
-            }
+/* TITLE */
+h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #38bdf8;
+    letter-spacing: 1px;
+}
 
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
+/* TIMER BOX */
+.timer-box {
+    text-align: center;
+    padding: 30px;
+}
+
+/* CIRCLE */
+.circle {
+    position: relative;
+    width: 250px;
+    height: 250px;
+}
+
+svg {
+    transform: rotate(-90deg);
+}
+
+circle {
+    fill: none;
+    stroke-width: 12;
+}
+
+/* Background ring */
+.bg {
+    stroke: #1e293b;
+}
+
+/* 🔥 Neon progress */
+.progress {
+    stroke: #56d7ce;
+    stroke-linecap: butt;
+    stroke-dasharray: 691;
+    stroke-dashoffset: 691;
+    transition: stroke-dashoffset 1s linear;
+    filter: drop-shadow(0 0 6px #37c9b3);
+}
+
+
+.c { 
+  width:100%;
+  text-align: center;
+  color: white;
+  margin-bottom:30px;
+  text-transform: uppercase;
+  padding: 1px;
+  font-family: 'Raleway', cursive;
+  font-weight: 100;
+  position: relative;
+  background: linear-gradient(to right, black, #eee, black);
+}
+.c::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -50px;
+  width: 0px;
+   pointer-events: none;
+  margin-left: -300px;
+  margin-top: -220px;
+  height: 600px;
+  background: radial-gradient(50% 50%, ellipse closest-side, #444, black);
+  z-index: -1;
+}
+
+.c a {
+  background: #040c1f;
+  display: block;
+  padding: 20px;
+  text-decoration: none;
+  letter-spacing: 30px;
+  color: white;
+}
+
+/* TIME TEXT */
+.time-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 36px;
+    font-weight: bold;
+    color: #f8fafc;
+}
+
+/* BUTTON */
+button {
+    margin-top: 30px;
+    font-size: 16px;
+    padding: 12px 36px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3abcc8, #4e9ab0);
+    color: #022c22;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(34,197,94,0.6);
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(34,197,94,0.9);
+}
+
+/* END SCREEN */
+.end-screen {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, #020617, #000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 64px;
+    font-weight: bold;
+    color: #2a90aa;
+    z-index: 999;
+    animation: fadeInSmooth 0.8s ease forwards;
+}
+
+@keyframes fadeInSmooth {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
     </style>
 </head>
-
 <body>
 
-    <canvas id="canvas"></canvas>
+    <h1 class="c" style="margin-bottom: 30px"><a href="#0">Hackathon Timer</a></h1>
 
-    <div class="app">
-        <h1>HACKATHON COUNTDOWN</h1>
-        <div class="timer" id="timer">01:00</div>
 
-        <div class="controls" id="controls">
-            <button class="start" onclick="startTimer()">Start</button>
-        </div>
+<div class="timer-box">
+    <div class="circle">
+        <svg width="250" height="250">
+            <circle class="bg" cx="125" cy="125" r="110"></circle>
+            <circle class="progress" cx="125" cy="125" r="110"></circle>
+        </svg>
+        <div id="timer" class="time-text">Waiting</div>
     </div>
+</div>
 
-    <div class="blast" id="blast">TIME UP</div>
 
-    <script>
+<button id="startBtn">Start</button>
 
-        const controls = document.getElementById("controls");
+<script>
+    const progressCircle = document.querySelector(".progress");
+const radius = 110;
+const circumference = 2 * Math.PI * radius;
+progressCircle.style.strokeDasharray = circumference;
 
-        /* ====== GLOBAL STATE ====== */
+const TIME_URL = "/time";
+const START_URL = "/start";
+
+let interval = null;
 const timerEl = document.getElementById("timer");
-const blastEl = document.getElementById("blast");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
 
-canvas.width = innerWidth;
-canvas.height = innerHeight;
-const STORAGE_KEY = "hackathon_end_time";
+document.getElementById("startBtn").onclick = startTimer;
 
-let duration = 10; // 25 HOURS
-let time = duration;
-let interval = null;   // ✅ MUST exist
-let particles = [];
-
-function format(t) {
-  if (t >= 3600) {
-    // HH:MM:SS
-    const h = String(Math.floor(t / 3600)).padStart(2, '0');
-    const m = String(Math.floor((t % 3600) / 60)).padStart(2, '0');
-    const s = String(t % 60).padStart(2, '0');
-    return `${h}:${m}:${s}`;
-  }
-
-  if (t >= 60) {
-    // MM:SS
-    const m = String(Math.floor(t / 60)).padStart(2, '0');
-    const s = String(t % 60).padStart(2, '0');
-    return `${m}:${s}`;
-  }
-
-  // Seconds only
-  return String(t);
+async function startTimer() {
+    await fetch(START_URL);
+    document.getElementById("startBtn").style.display = "none";
+    runCountdown();
 }
 
+async function updateTimerDisplay() {
+    const res = await fetch(TIME_URL);
+    const data = await res.json();
 
-function startTimer() {
-  if (interval) return;
-
-  let endTime = localStorage.getItem(STORAGE_KEY);
-
-  if (!endTime) {
-    endTime = Date.now() + time * 1000;
-    localStorage.setItem(STORAGE_KEY, endTime);
-  } else {
-    endTime = Number(endTime);
-  }
-
-  controls.classList.add("hidden");
-
-  interval = setInterval(() => {
-    const remaining = Math.max(
-      0,
-      Math.floor((endTime - Date.now()) / 1000)
-    );
-
-    time = remaining;
-    timerEl.textContent = format(time);
-
-    if (time <= 10) timerEl.classList.add("warning");
-
-    if (time === 0) {
-      clearInterval(interval);
-      interval = null;
-      explode();
+    if (!data.started) {
+        timerEl.innerText = "Waiting";
+        return;
     }
-  }, 1000);
+
+    let ms = data.remaining;
+
+    if (ms <= 1000) {
+        clearInterval(interval);
+        progressCircle.style.strokeDashoffset = 0;
+        showEndScreen();
+        return;
+    }
+
+    let totalSeconds = Math.floor(ms / 1000);
+
+    let hrs = Math.floor(totalSeconds / 3600);
+    let mins = Math.floor((totalSeconds % 3600) / 60);
+    let secs = totalSeconds % 60;
+
+    let display = "";
+
+    if (hrs > 0) {
+        display =
+            `${hrs.toString().padStart(2, '0')}:` +
+            `${mins.toString().padStart(2, '0')}:` +
+            `${secs.toString().padStart(2, '0')}`;
+    } else if (mins > 0) {
+        display =
+            `${mins.toString().padStart(2, '0')}:` +
+            `${secs.toString().padStart(2, '0')}`;
+    } else {
+        display = `${secs.toString().padStart(2, '0')}`;
+    }
+
+    timerEl.innerText = display;
+
+    // Circle Progress Logic
+    const percent = ms / data.total;  // Make sure backend sends total time
+    const offset = circumference - percent * circumference;
+    progressCircle.style.strokeDashoffset = offset;
 }
 
-const savedEnd = localStorage.getItem(STORAGE_KEY);
-if (savedEnd && Number(savedEnd) > Date.now()) {
-  startTimer();
+async function runCountdown() {
+    if (interval) return;
+
+    // Update display immediately
+    await updateTimerDisplay();
+
+    interval = setInterval(updateTimerDisplay, 1000);
 }
 
+function showEndScreen() {
+    const endDiv = document.createElement("div");
+    endDiv.className = "end-screen";
+    endDiv.innerText = " TIME OVER ";
+    document.body.appendChild(endDiv);
 
+    // Screen shake effect
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            endDiv.style.transform = i % 2 === 0 ? "translateX(10px)" : "translateX(-10px)";
+        }, i * 50);
+    }
+    setTimeout(() => {
+        endDiv.style.transform = "translateX(0)";
+    }, 300);
 
-        function explode() {
-              timerEl.classList.add("hidden"); //
-            blastEl.style.opacity = 1;
-            blastEl.classList.add("show");
+    // Try to play sound
+    const audio = new Audio("data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==");
+    audio.play().catch(() => {});
+}
 
-            for (let i = 0; i < 220; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    vx: (Math.random() - 0.5) * 12,
-                    vy: (Math.random() - 0.5) * 12,
-                    r: Math.random() * 2.5 + 1,
-                    life: 90
-                });
-            }
-            animate();
+// Auto-sync
+(async () => {
+    try {
+        const res = await fetch(TIME_URL);
+        const data = await res.json();
 
+        if (data.started) {
+            document.getElementById("startBtn").style.display = "none";
+            runCountdown();
         }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach((p, i) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.life--;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = "#ff5f5f";
-                ctx.fill();
-                if (p.life <= 0) particles.splice(i, 1);
-            });
-            if (particles.length) requestAnimationFrame(animate);
-        }
-
-        timerEl.textContent = format(time);
-    </script>
-
+    } catch (err) {
+        console.error("Sync error:", err);
+    }
+})();
+</script>
 </body>
-
 </html>
