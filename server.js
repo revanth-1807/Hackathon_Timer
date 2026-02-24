@@ -5,7 +5,7 @@ const app = express();
 const PORT = 3000;
 
 /* 🔴 CHANGE TIME HERE ONLY */
-const COUNTDOWN_DURATION =  65 * 1000; 
+const COUNTDOWN_DURATION =  24 * 60 * 60 * 1000; 
 // Examples:
 // 10 sec  → 10 * 1000
 // 1 min   → 1 * 60 * 1000
